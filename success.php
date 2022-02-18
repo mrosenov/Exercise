@@ -45,13 +45,13 @@ include ("connection.php");
 		<?php
 			if(isset($_POST['save']))
 			{	 
-				 $customerName = $_POST['customerName'];
-				 $customerEmail = $_POST['customerEmail'];
-				 $productID = $_POST['productID'];
-				 $productName = $_POST['productName'];
-				 $sql = "INSERT INTO sold (productID,customerName,customerEmail) VALUES ('$productID','$customerName','$customerEmail')";
+				$customerName = mysqli_real_escape_string($DBConnect, $_POST['customerName']);
+                $customerEmail = mysqli_real_escape_string($DBConnect,$_POST['customerEmail']);
+                $productID = mysqli_real_escape_string($DBConnect,$_POST['productID']);
+                $productName = mysqli_real_escape_string($DBConnect,$_POST['productName']);
+				$sql = "INSERT INTO sold (productID,customerName,customerEmail) VALUES ('$productID','$customerName','$customerEmail')";
 				 
-				 $results = $DBConnect->query("SELECT productID FROM products WHERE productID = '$productID'");
+				$results = $DBConnect->query("SELECT productID FROM products WHERE productID = '$productID'");
 				if($results->num_rows === 0)
 				{
 				   echo '
@@ -60,16 +60,25 @@ include ("connection.php");
 					</div>
 				   ';
 				 }
+				else if ( (!isset($customerName) || trim($customerName)) == '' || (!isset($customerEmail) || trim($customerEmail) == '') ) 
+				{
+					echo 
+					'
+						<div class="alert alert-danger" role="alert">
+						  Please fill Name & Email
+						</div>					
+					';
+				}
 				else
 				{ 
-				 if (mysqli_query($DBConnect, $sql)) 
-				 {
-					echo '
-					<div class="alert alert-success" role="alert">
-					  '.$customerName.', you just bought '.$productName.'
-					</div>
-					';
-				 } 
+					if (mysqli_query($DBConnect, $sql)) 
+					{
+						echo '
+						<div class="alert alert-success" role="alert">
+						  '.$customerName.', you just bought '.$productName.'
+						</div>
+						';
+					} 
 				}				 
 				 mysqli_close($DBConnect);
 			}
