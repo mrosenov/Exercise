@@ -49,7 +49,8 @@ include ("connection.php");
                 $customerEmail = mysqli_real_escape_string($DBConnect,$_POST['customerEmail']);
                 $productID = mysqli_real_escape_string($DBConnect,$_POST['productID']);
                 $productName = mysqli_real_escape_string($DBConnect,$_POST['productName']);
-				$sql = "INSERT INTO sold (productID,customerName,customerEmail) VALUES ('$productID','$customerName','$customerEmail')";
+                $date = date("Y-m-d H:i:s");
+				$sql = "INSERT INTO sold (productID,customerName,customerEmail,created_at) VALUES ('$productID','$customerName','$customerEmail','$date')";
 				 
 				$results = $DBConnect->query("SELECT productID FROM products WHERE productID = '$productID'");
 				if($results->num_rows === 0)
